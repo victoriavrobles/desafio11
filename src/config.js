@@ -6,7 +6,7 @@ export default {
     },
     mongoRemote: {
         client: 'mongodb',
-        cnxStr: 'mongodb+srv://root:root@cluster0.7yey2qr.mongodb.net/ecommerce?retryWrites=true&w=majority’'
+        cnxStr: 'mongodb+srv://root:root@cluster0.7uvuunh.mongodb.net/ecommerce?retryWrites=true&w=majority'
     },
     sqlite3: {
         client: 'sqlite3',

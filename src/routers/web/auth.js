@@ -5,26 +5,38 @@ import path from 'path'
 const authWebRouter = new Router()
 
 authWebRouter.get('/', (req, res) => {
-    //Si la sesion no existe, redirigir a login, sino redirigir a home
-    res.redirect('/home')
+    if (!req.session.nombre) {
+        res.redirect('/login')
+    } else {
+        res.redirect('/home')
+    }
 })
 
 authWebRouter.get('/login', (req, res) => {
-    //Si ya existe una sesion, redirigir al home
-    res.sendFile(process.cwd() + '/views/login.html')
+    if (!req.session.nombre) {
+        res.sendFile(process.cwd() + '/views/login.html')
+    } else {
+        res.redirect('/home')
+    }
 })
 
 authWebRouter.get('/logout', (req, res) => {
-    //Obtener el nombre del usuario
-    //Eliminar la sesion con destroy
-    //Renderizar la plantilla con el nombre de usuario
-    res.render(process.cwd() + '/views/pages/logout.ejs', { nombre: 'usuario' })
+
+    const nombre = req.session.nombre;
+    if (!nombre) {
+      return res.send(`Logout ya efectuado anteriormente`);
+    }
+    req.session.destroy((err) => {
+      if (!err) {
+        return res.render(process.cwd() + '/views/pages/logout.ejs', { nombre: nombre })
+      }
+    });
 })
 
 
 authWebRouter.post('/login', (req, res) => {
     console.log(req.body);
-    //Guardar el nombre que viene en el body en la sesion.
+    req.session.nombre = req.body.nombre;
     res.redirect('/home')
 })
 

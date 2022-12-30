@@ -4,6 +4,8 @@ import config from './config.js'
 
 import { Server as HttpServer } from 'http'
 import { Server as Socket } from 'socket.io'
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
 
 import authWebRouter from './routers/web/auth.js'
 import homeWebRouter from './routers/web/home.js'
@@ -12,16 +14,28 @@ import productosApiRouter from './routers/api/productos.js'
 import addProductosHandlers from './routers/ws/productos.js'
 import addMensajesHandlers from './routers/ws/mensajes.js'
 
-//TO DO: Importar el session-mongo
-//Configurar el session
+import MongoStore from 'connect-mongo'
 
-
+const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 //--------------------------------------------
 // instancio servidor, socket y api
 
 const app = express()
 const httpServer = new HttpServer(app)
 const io = new Socket(httpServer)
+
+app.use(cookieParser());
+app.use(session({
+  store: MongoStore.create({
+    mongoUrl: 'mongodb+srv://username:tWlfuD9cmxHGBBd2@cluster0.7uvuunh.mongodb.net/sesiones?retryWrites=true&w=majority',
+    mongoOptions: advancedOptions,
+    ttl: 600
+  }),
+  secret: 'cualquier_cosa',
+  resave: false,
+  saveUninitialized: false
+}));
+
 
 //--------------------------------------------
 // configuro el socket
